@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import CustomVcc from '@withkoji/custom-vcc-sdk';
 import App from './editor/app';
+import Help from './tips/help';
 
 class VCC extends React.PureComponent {
     constructor(props) {
@@ -10,6 +11,7 @@ class VCC extends React.PureComponent {
         this.customVcc = new CustomVcc();
         this.update = this.update.bind(this);
         this.showModal = this.showModal.bind(this);
+        this.setVar = this.setVar.bind(this);
         const initialValue = {
             count: 0,
             grid: {},
@@ -66,6 +68,10 @@ class VCC extends React.PureComponent {
         });
     }
 
+    setVar(key, val){
+        document.documentElement.style.setProperty(key, val)
+    }
+
     componentDidMount() {
         this.customVcc.register('500px', '534px');
 
@@ -75,15 +81,15 @@ class VCC extends React.PureComponent {
         if(border != undefined) border = border.replace(';', '');
         if(font != undefined) font = font.replace('font-family: ', '').replace(';', '');
 
-        document.documentElement.style.setProperty('--text-color', this.state.theme.colors['foreground.default']);
-        document.documentElement.style.setProperty('--color-primary', this.state.theme.colors['input.background']);
-        document.documentElement.style.setProperty('--back-default', this.state.theme.colors['border.default']);
-        document.documentElement.style.setProperty('--back-secundary', this.state.theme.colors['foreground.secondary']);
-        document.documentElement.style.setProperty('--color-secundary', this.state.theme.colors['foreground.primary']);
-        document.documentElement.style.setProperty('--border-color', border);
-        document.documentElement.style.setProperty('--color-base', this.state.theme.colors['background.default']);
-        document.documentElement.style.setProperty('--font-family', font);
-        document.documentElement.style.setProperty('--color-default', this.state.theme.colors['background.default']);
+        this.setVar('--text-color', this.state.theme.colors['foreground.default']);
+        this.setVar('--color-primary', this.state.theme.colors['input.background']);
+        this.setVar('--back-default', this.state.theme.colors['border.default']);
+        this.setVar('--back-secundary', this.state.theme.colors['foreground.secondary']);
+        this.setVar('--color-secundary', this.state.theme.colors['foreground.primary']);
+        this.setVar('--border-color', border);
+        this.setVar('--color-base', this.state.theme.colors['background.default']);
+        this.setVar('--font-family', font);
+        this.setVar('--color-default', this.state.theme.colors['background.default']);
     }
 
     componentWillUpdate(){
@@ -95,15 +101,15 @@ class VCC extends React.PureComponent {
         if(border != undefined) border = border.replace(';', '');
         if(font != undefined) font = font.replace('font-family: ', '').replace(';', '');
 
-        document.documentElement.style.setProperty('--text-color', this.state.theme.colors['foreground.default']);
-        document.documentElement.style.setProperty('--color-primary', this.state.theme.colors['input.background']);
-        document.documentElement.style.setProperty('--back-default', this.state.theme.colors['border.default']);
-        document.documentElement.style.setProperty('--back-secundary', this.state.theme.colors['foreground.secondary']);
-        document.documentElement.style.setProperty('--color-secundary', this.state.theme.colors['foreground.primary']);
-        document.documentElement.style.setProperty('--border-color', border);
-        document.documentElement.style.setProperty('--color-base', this.state.theme.colors['background.default']);
-        document.documentElement.style.setProperty('--font-family', font);
-        document.documentElement.style.setProperty('--color-default', this.state.theme.colors['background.default']);
+        this.setVar('--text-color', this.state.theme.colors['foreground.default']);
+        this.setVar('--color-primary', this.state.theme.colors['input.background']);
+        this.setVar('--back-default', this.state.theme.colors['border.default']);
+        this.setVar('--back-secundary', this.state.theme.colors['foreground.secondary']);
+        this.setVar('--color-secundary', this.state.theme.colors['foreground.primary']);
+        this.setVar('--border-color', border);
+        this.setVar('--color-base', this.state.theme.colors['background.default']);
+        this.setVar('--font-family', font);
+        this.setVar('--color-default', this.state.theme.colors['background.default']);
     }
 
     showModal(callback){
@@ -124,7 +130,10 @@ class VCC extends React.PureComponent {
     }
 
     render() {
-        return <App mailer={this.state.data} setMailer={this.update} />;
+        return <>
+            <App mailer={this.state.data} setMailer={this.update} />
+            <Help />
+        </>;
     }
 }
 
