@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import CustomVcc from '@withkoji/custom-vcc-sdk';
-import App from './editor/app';
-import Help from './tips/help';
+import App from './app';
 
 class VCC extends React.PureComponent {
     constructor(props) {
@@ -12,25 +11,14 @@ class VCC extends React.PureComponent {
         this.update = this.update.bind(this);
         this.showModal = this.showModal.bind(this);
         this.setVar = this.setVar.bind(this);
+        this.option = {            
+            open: true,
+            select: -1,
+            speed: 1,
+            direction: 0
+        };
         const initialValue = {
-            count: 0,
-            grid: {},
-            platform: {},
-            block: {},
-            panel: undefined,
-            blockProps: [
-                {title: 'meu angle', type: 'number', opt: {min: 0, max: 360, step: 1}, value: 0}
-            ],
-            background: {
-                status: false,
-                data: []
-            },
-            selection: {
-                platform: -1,
-                block: -1,
-                background: -1
-            },
-            open: this.showModal   
+            data: [],    
         };
         this.state = {
             value: null,
@@ -42,23 +30,13 @@ class VCC extends React.PureComponent {
             const data = Object.assign({}, initialValue);
             const value = Object.assign({}, newProps.value);
 
-            if(typeof value != 'object') value = {}
-
-            if(value.grid != undefined) data.grid = value.grid;
-
-            if(value.platforms != undefined){
-                if(data.platform.movable == undefined) data.platform.movable = {};
-                data.platform.movable.platform = value.platforms;
-            }
-
-            if(value.blocks != undefined){
-                if(data.block.movable == undefined) data.block.movable = {};
-                data.block.movable.blocks = value.blocks;
-            }
-            if(value.background != undefined) data.background.data = value.background;
-            if(value.blockProps != undefined) data.blockProps = value.blockProps;
-
-            if(this.state.value != data) this.setState({data: data, value: newProps})   
+            data.open = this.option.open;
+            data.select = this.option.select;
+            data.speed = this.option.speed;
+            data.direction = this.option.direction;
+            if(value.data != undefined) data.data = value.data;  
+            
+            this.setState({data: data, value: newProps})   
         });
 
         this.customVcc.onTheme((theme) => {
@@ -117,22 +95,20 @@ class VCC extends React.PureComponent {
     }
 
     update(props){
-        const data = {
-            grid: props.grid,
-            platforms: props.platform == undefined ? [] : props.platform.movable == undefined ? [] : props.platform.movable.platform,
-            blocks: props.block == undefined ? [] : props.block.movable == undefined ? [] : props.block.movable.blocks,
-            background: props.background.data,
-            blockProps: props.blockProps
+        this.option = {
+            open: props.open,
+            select: props.select,
+            speed: props.speed,
+            direction: props.direction
         }
 
-        this.customVcc.change(data);
+        this.customVcc.change({data: props.data});
         this.customVcc.save();
     }
 
     render() {
         return <>
-            <App mailer={this.state.data} setMailer={this.update} />
-            <Help />
+            {this.state.data != null && <App data={this.state.data} setData={this.update} open={this.showModal} /> }
         </>;
     }
 }
