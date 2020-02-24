@@ -200,6 +200,8 @@ const Range = styled.div`
 export default function App({data, setData, open}) {
     const range = useRef();
     const number = useRef();
+    const range2 = useRef();
+    const number2 = useRef();
 
     const Add = () => {
        open(url => {
@@ -288,6 +290,12 @@ export default function App({data, setData, open}) {
 
         window.data = d;
         setData(d);
+    }    
+
+    if(data.select >= 0){
+        //console.log(range.current != undefined, parseFloat(data.data[data.select].depth), data.data[data.select].depth)
+        if(range.current != undefined) range.current.value = parseFloat(data.data[data.select].depth);
+        if(number.current != undefined) number.current.value = parseFloat(data.data[data.select].depth);
     }
 
     return <Wrapper>
@@ -328,8 +336,14 @@ export default function App({data, setData, open}) {
                 onMouseUp={e => Finished(e.target.value)}
                 onTouchEnd={e => Finished(e.target.value)}
                 onChange={e => {
-                    number.current.value = range.current.value;
-                    Change(e.target.value);
+
+                    range.current.value = parseFloat(e.target.value);
+                    number.current.value = parseFloat(e.target.value);
+                    Change(parseFloat(e.target.value));
+
+                    
+                    window.data.speed = parseFloat(e.target.value);
+                    console.log(e.target.value)
                 }}
             />
             <Action onClick={Edit} />
@@ -341,25 +355,31 @@ export default function App({data, setData, open}) {
             <Range style={{width: '190px'}}>
                 Speed
                 <input 
-                    ref={number} 
+                    ref={number2} 
                     type="number" 
-                    defaultValue={data.speed} 
-                    onBlur={e => Update('speed', e.target.value)}
+                    defaultValue={parseFloat(data.select >= 0 ? data.data[data.select].depth : 0)} 
+                    onBlur={e => Update('speed', window.data.speed)}
                     onChange={e => {
-                        range.current.value = number.current.value
-                        window.data.speed = e.target.value
+                        range2.current.value = parseFloat(e.target.value);
+                        number2.current.value = parseFloat(e.target.value);
+                        window.data.speed = parseFloat(e.target.value);
                     }}
                 />
             </Range>
             <input 
-                ref={range} 
+                ref={range2} 
                 type="range" min="-10" max="10" step="1" 
-                defaultValue={data.speed}
-                onMouseUp={e => Update('speed', e.target.value)}
-                onTouchEnd={e => Update('speed', e.target.value)}
+                defaultValue={parseFloat(data.select >= 0 ? data.data[data.select].depth : 0)}
+                onMouseUp={e => Update('speed', window.data.speed)}
+                onTouchEnd={e => Update('speed', window.data.speed)}
                 onChange={e => {
-                    number.current.value = range.current.value
-                    window.data.speed = e.target.value
+                    console.log(e, range2.current.value, number2.current.value)
+
+                    range2.current.value = parseFloat(e.target.value);
+                    number2.current.value = parseFloat(e.target.value);
+
+                    
+                    window.data.speed = parseFloat(e.target.value);
                 }}
             />
             <Action type="null" onClick={() => Update('direction', 0)}>x</Action>
